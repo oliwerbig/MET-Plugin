@@ -1,0 +1,16 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "FTP deploy (csak módosított fájlok)",
+            "type": "shell",
+            "command": "php deploy-ftp.php",
+            "problemMatcher": [],
+            // A környezeti változók (FTP_HOST, FTP_USER, FTP_PASS, FTP_TARGET) a Codespace secretsből öröklődnek
+            "options": {},
+            "presentation": {
+                "reveal": "always"
+            }
+        }
+    ]
+}

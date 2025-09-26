@@ -31,6 +31,7 @@ class Met_Plugin_Admin {
        public function register_settings() {
 	       register_setting( 'met_plugin_settings', 'met_plugin_pinecone_api_key' );
 	       register_setting( 'met_plugin_settings', 'met_plugin_pinecone_env' );
+	       register_setting( 'met_plugin_settings', 'met_plugin_pinecone_host' );
 	       register_setting( 'met_plugin_settings', 'met_plugin_vertexai_json_path' );
        }
 
@@ -44,6 +45,8 @@ class Met_Plugin_Admin {
 	       echo '<td><input type="password" name="met_plugin_pinecone_api_key" value="' . esc_attr( get_option('met_plugin_pinecone_api_key', '') ) . '" size="50" autocomplete="new-password" /></td></tr>';
 	       echo '<tr><th scope="row">' . esc_html__( 'Pinecone environment', 'met-plugin' ) . '</th>';
 	       echo '<td><input type="text" name="met_plugin_pinecone_env" value="' . esc_attr( get_option('met_plugin_pinecone_env', '') ) . '" size="30" /></td></tr>';
+	       echo '<tr><th scope="row">' . esc_html__( 'Pinecone host', 'met-plugin' ) . '</th>';
+	       echo '<td><input type="text" name="met_plugin_pinecone_host" value="' . esc_attr( get_option('met_plugin_pinecone_host', '') ) . '" size="40" placeholder="pl. your-index-yourproject.svc.yourregion.pinecone.io" /></td></tr>';
 	       echo '<tr><th scope="row">' . esc_html__( 'Vertex AI service account JSON útvonal', 'met-plugin' ) . '</th>';
 	       echo '<td><input type="text" name="met_plugin_vertexai_json_path" value="' . esc_attr( get_option('met_plugin_vertexai_json_path', '') ) . '" size="60" placeholder="/full/path/to/service-account.json" /></td></tr>';
 	       echo '</table>';
