@@ -1,0 +1,49 @@
+name: Deploy WordPress Plugin via FTP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up FTP credentials
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+          FTP_TARGET: ${{ secrets.FTP_TARGET }}
+        run: |
+          echo "FTP_HOST=$FTP_HOST" >> $GITHUB_ENV
+          echo "FTP_USER=$FTP_USER" >> $GITHUB_ENV
+          echo "FTP_PASS=$FTP_PASS" >> $GITHUB_ENV
+          echo "FTP_TARGET=$FTP_TARGET" >> $GITHUB_ENV
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ env.FTP_HOST }}
+          username: ${{ env.FTP_USER }}
+          password: ${{ env.FTP_PASS }}
+          server-dir: ${{ env.FTP_TARGET }}
+          local-dir: ./
+          exclude: |
+            **/.git*
+            **/.github*
+            **/.vscode*
+            **/node_modules*
+            **/tests*
+            **/test*
+            **/*.md
+            **/*.yml
+            **/*.yaml
+            **/*.json
+            **/composer.*
+            **/package*.json
+            **/phpunit.*
+            **/.DS_Store
