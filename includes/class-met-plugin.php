@@ -6,6 +6,7 @@
 require_once plugin_dir_path( __FILE__ ) . 'Met_Plugin_Pinecone.php';
 require_once plugin_dir_path( __FILE__ ) . 'Met_Plugin_Admin.php';
 require_once plugin_dir_path( __FILE__ ) . 'Met_Plugin_GeminiRAG.php';
+require_once plugin_dir_path( __FILE__ ) . 'Met_Plugin_GeminiRAG_helpers.php';
 
 
 class Met_Plugin {

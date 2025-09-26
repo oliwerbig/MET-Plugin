@@ -9,6 +9,7 @@ class Met_Plugin_GeminiRAG {
         add_action('admin_menu', [$this, 'add_admin_pages']);
         add_action('admin_init', [$this, 'register_settings']);
         add_action('wp_ajax_agent_get_response', [$this, 'agent_handle_ajax_request']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
     }
 
     public function add_admin_pages() {
@@ -42,7 +43,7 @@ class Met_Plugin_GeminiRAG {
     }
 
     public function render_chat_page() {
-        // Use the provided HTML/JS from the user's snippet but keep it minimal here and enqueue scripts properly in real plugin
+        // Render HTML shell; JS/CSS are enqueued by enqueue_admin_assets()
         ?>
         <div class="wrap">
             <h1>Intelligens Tartalom Ügynök</h1>
@@ -59,54 +60,20 @@ class Met_Plugin_GeminiRAG {
                 </div>
             </div>
         </div>
-        <style>
-            #agent-chat-container { max-width: 900px; margin: 20px 0; border: 1px solid #ccd0d4; border-radius: 4px; display: flex; flex-direction: column; height: 70vh; background-color: #fff; }
-            #chat-history { flex-grow: 1; overflow-y: auto; padding: 15px; background-color: #f7f7f7; }
-            .chat-message { padding: 10px 15px; border-radius: 18px; margin-bottom: 15px; max-width: 90%; word-wrap: break-word; line-height: 1.5; }
-            .user { background-color: #f0f0f0; color: #333; margin-left: auto; border-bottom-right-radius: 5px; }
-            .bot { background-color: #e5f5ff; color: #005a87; margin-right: auto; border-bottom-left-radius: 5px; }
-        </style>
-        <script>
-        jQuery(document).ready(function($) {
-            const chatHistory = $('#chat-history');
-            const chatInput = $('#chat-input');
-            const chatSend = $('#chat-send');
-
-            function displayMessage(role, content, context = null) {
-                let messageHtml = `<div class="chat-message ${role}"><div class="message-content">${content}</div>`;
-                if (role === 'bot' && context) {
-                    messageHtml += `<div class="agent-context-details"><details><summary>Az ügynök gondolatmenete</summary><pre>${$('<div>').text(context).html()}</pre></details></div>`;
-                }
-                messageHtml += `</div>`;
-                chatHistory.append(messageHtml);
-                chatHistory.scrollTop(chatHistory.prop("scrollHeight"));
-            }
-
-            function sendMessage() {
-                const question = chatInput.val().trim();
-                if (question === "") return;
-                displayMessage('user', question.replace(/\n/g, '<br>'));
-                chatInput.val('');
-                chatSend.prop('disabled', true).html('<span class="spinner"></span>');
-
-                $.post(ajaxurl, { action: 'agent_get_response', security: '<?php echo wp_create_nonce('agent_nonce'); ?>', question: question }, function(response) {
-                    if (response.success) {
-                        displayMessage('bot', response.data.answer, response.data.context);
-                    } else {
-                        displayMessage('bot', 'Hiba: ' + response.data.message);
-                    }
-                }).fail(function(){
-                    displayMessage('bot', 'Hiba: Ismeretlen szerveroldali hiba.');
-                }).always(function(){
-                    chatSend.prop('disabled', false).text('Küldés');
-                });
-            }
-
-            chatSend.on('click', sendMessage);
-            chatInput.on('keypress', function(e) { if (e.which === 13 && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-        });
-        </script>
         <?php
+    }
+
+    public function enqueue_admin_assets($hook) {
+        // Only enqueue on our plugin pages
+        if (strpos($hook, 'content-agent') === false && strpos($hook, 'toplevel_page_content-agent-main') === false) return;
+
+        $asset_base = plugin_dir_url( __DIR__ ) . '../assets';
+        wp_enqueue_style('met-gemini-admin', $asset_base . '/css/gemini-rag-admin.css', [], '1.0');
+        wp_enqueue_script('met-gemini-admin', $asset_base . '/js/gemini-rag-admin.js', ['jquery'], '1.0', true);
+        wp_localize_script('met-gemini-admin', 'MetGemini', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('agent_nonce')
+        ]);
     }
 
     /* --------- AJAX handler (calls to the helper functions are delegated to global functions which we expect to exist in plugin) ---------- */
