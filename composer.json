@@ -1,0 +1,15 @@
+{
+    "name": "met-industry/met-plugin",
+    "description": "WordPress plugin a MET Industry Kft. számára.",
+    "type": "wordpress-plugin",
+    "require": {
+        "google/auth": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MetPlugin\\": "includes/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
