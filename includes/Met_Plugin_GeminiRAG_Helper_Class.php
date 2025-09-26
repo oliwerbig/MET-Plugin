@@ -4,8 +4,6 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-use Google\Auth\ApplicationDefaultCredentials;
-
 class Met_Plugin_GeminiRAG_Helper {
     /**
      * Return the company profile string used as system prompt.
@@ -41,13 +39,29 @@ class Met_Plugin_GeminiRAG_Helper {
         if ($cached_token) return $cached_token;
 
         $key_file_path = get_option('gemrag_service_account_path');
+        // Google API autoloader betöltése, ha szükséges
+        if (!class_exists('Google\\Auth\\ApplicationDefaultCredentials')) {
+            $composer_autoload = WP_PLUGIN_DIR . '/met-plugin/vendor/autoload.php';
+            if (file_exists($composer_autoload)) {
+                require_once $composer_autoload;
+            }
+        }
+        // Ellenőrizzük, hogy az osztály tényleg elérhető-e
         if (empty($key_file_path) || !file_exists($key_file_path) || !class_exists('Google\\Auth\\ApplicationDefaultCredentials')) {
             set_transient('agent_gcloud_auth_error', 'missing_credentials', 5 * MINUTE_IN_SECONDS);
+            if (function_exists('error_log')) {
+                error_log('MetPlugin Auth error: Google Auth library not found or keyfile missing. Please install google/auth via Composer and check the service account path.');
+            }
             return false;
         }
         try {
             putenv('GOOGLE_APPLICATION_CREDENTIALS=' . $key_file_path);
-            $creds = ApplicationDefaultCredentials::getCredentials(['https://www.googleapis.com/auth/cloud-platform']);
+            // Csak akkor próbáljuk meg használni, ha az osztály tényleg elérhető
+            if (!class_exists('Google\\Auth\\ApplicationDefaultCredentials')) {
+                throw new Exception('Google Auth library not found. Please install google/auth via Composer.');
+            }
+            // Itt már biztosan létezik az osztály
+            $creds = \Google\Auth\ApplicationDefaultCredentials::getCredentials(['https://www.googleapis.com/auth/cloud-platform']);
             $token_data = $creds->fetchAuthToken();
             $access_token = $token_data['access_token'] ?? false;
             if ($access_token) {
@@ -110,4 +124,5 @@ class Met_Plugin_GeminiRAG_Helper {
     }
 }
 
+return true;
 return true;
