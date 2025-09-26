@@ -6,10 +6,35 @@
             "type": "shell",
             "command": "php deploy-ftp.php",
             "problemMatcher": [],
-            // A környezeti változók (FTP_HOST, FTP_USER, FTP_PASS, FTP_TARGET) a Codespace secretsből öröklődnek
             "options": {},
             "presentation": {
                 "reveal": "always"
+            }
+        }
+        ,
+        {
+            "label": "Docker FTP deploy",
+            "type": "shell",
+            "command": "bash deploy-ftp-docker.sh",
+            "problemMatcher": [],
+            "options": {},
+            "presentation": {
+                "reveal": "always"
+            }
+        }
+        ,
+        {
+            "label": "Deploy (Local)",
+            "type": "shell",
+            "command": "bash -lc 'set -o allexport; [ -f .secrets ] && source .secrets || true; set +o allexport; bash deploy-ftp-docker.sh'",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "showReuseMessage": true
             }
         }
     ]
