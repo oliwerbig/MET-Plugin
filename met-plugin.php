@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Plugin Name: MET Plugin
@@ -6,6 +7,10 @@
  * Author: MET Industry Kft.
  * Text Domain: met-plugin
  */
+
+if ( ! defined( 'MET_PLUGIN_FILE' ) ) {
+	   define( 'MET_PLUGIN_FILE', __FILE__ );
+}
 
 require_once __DIR__ . '/includes/class-met-plugin.php';
 

@@ -6,10 +6,26 @@ class Met_Plugin_Admin {
        public function __construct() {
 	       add_action( 'admin_menu', [ $this, 'add_admin_menu' ] );
 	       add_action( 'admin_init', [ $this, 'register_settings' ] );
+	       add_filter( 'plugin_action_links_' . plugin_basename( dirname( __DIR__ ) . '/met-plugin.php' ), [ $this, 'add_settings_link' ] );
        }
 
        public function add_admin_menu() {
-	       add_menu_page( __( 'MET Plugin', 'met-plugin' ), __( 'MET Plugin', 'met-plugin' ), 'manage_options', 'met-plugin', [ $this, 'admin_page' ] );
+	       add_menu_page(
+		       __( 'MET Plugin', 'met-plugin' ),
+		       __( 'MET Plugin', 'met-plugin' ),
+		       'manage_options',
+		       'met-plugin',
+		       [ $this, 'admin_page' ],
+		       'dashicons-admin-generic',
+		       2 // a legmagasabb szintre
+	       );
+       }
+
+       public function add_settings_link( $links ) {
+	       $url = admin_url( 'admin.php?page=met-plugin' );
+	       $settings_link = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Beállítások', 'met-plugin' ) . '</a>';
+	       array_unshift( $links, $settings_link );
+	       return $links;
        }
 
        public function register_settings() {
