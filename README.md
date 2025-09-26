@@ -28,7 +28,8 @@ bash scripts/wp-setup.sh
 ## Megjegyzések
 - A plugin a `vendor/autoload.php`-t betölti, ha a `vendor/` mappa elérhető (composer install után). Győződj meg róla, hogy a szükséges PHP csomagok telepítve vannak: `composer install` a projekt gyökérében.
 - A Gemini RAG funkciók használatához a Google Service Accountnak megfelelő engedélyekkel kell rendelkeznie (Vertex AI használata).
-- A deploy script (`deploy-ftp.php`) CLI-ben és WordPress környezetben is futtatható: WP alatt `wp_die()`-t használ hibakezelésre; CLI esetén kilépési kóddal tér vissza.
+ - A plugin a `vendor/autoload.php`-t betölti, ha a `vendor/` mappa elérhető (composer install után). Győződj meg róla, hogy a szükséges PHP csomagok telepítve vannak: `composer install` a projekt gyökérében.
+ - A Gemini RAG funkciók használatához a Google Service Accountnak megfelelő engedélyekkel kell rendelkeznie (Vertex AI használata).
 
 ## Következő lépések
 - Unit tesztek hozzáadása a helper logika mockolt HTTP hívásokkal.

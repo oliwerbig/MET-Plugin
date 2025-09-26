@@ -1,41 +1,4 @@
 {
     "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "FTP deploy (csak módosított fájlok)",
-            "type": "shell",
-            "command": "php deploy-ftp.php",
-            "problemMatcher": [],
-            "options": {},
-            "presentation": {
-                "reveal": "always"
-            }
-        }
-        ,
-        {
-            "label": "Docker FTP deploy",
-            "type": "shell",
-            "command": "bash deploy-ftp-docker.sh",
-            "problemMatcher": [],
-            "options": {},
-            "presentation": {
-                "reveal": "always"
-            }
-        }
-        ,
-        {
-            "label": "Deploy (Local)",
-            "type": "shell",
-            "command": "bash -lc 'set -o allexport; [ -f .secrets ] && source .secrets || true; set +o allexport; bash deploy-ftp-docker.sh'",
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared",
-                "showReuseMessage": true
-            }
-        }
-    ]
+    "tasks": []
 }
