@@ -8,7 +8,11 @@ $ftp_pass = getenv('FTP_PASS');
 $ftp_target = getenv('FTP_TARGET');
 
 if (!$ftp_host || !$ftp_user || !$ftp_pass || !$ftp_target) {
-    exit("Hiányzó FTP beállítások!\n");
+    if (function_exists('wp_die')) {
+        wp_die("Hiányzó FTP beállítások!");
+    }
+    // If not running under WP, stop execution (CLI path)
+    if (php_sapi_name() === 'cli') exit("Hiányzó FTP beállítások!\n");
 }
 
 // Módosított fájlok listázása git alapján
@@ -22,12 +26,25 @@ foreach ($output as $line) {
 }
 
 if (empty($changed_files)) {
-    exit("Nincs módosított fájl a feltöltéshez.\n");
+    if (function_exists('wp_die')) {
+        wp_die("Nincs módosított fájl a feltöltéshez.");
+    }
+    if (php_sapi_name() === 'cli') exit("Nincs módosított fájl a feltöltéshez.\n");
 }
 
 $conn = ftp_connect($ftp_host);
-if (!$conn) exit("Nem sikerült csatlakozni az FTP szerverhez!\n");
-if (!ftp_login($conn, $ftp_user, $ftp_pass)) exit("FTP belépés sikertelen!\n");
+if (!$conn) {
+    if (function_exists('wp_die')) {
+        wp_die('Nem sikerült csatlakozni az FTP szerverhez!');
+    }
+    if (php_sapi_name() === 'cli') exit("Nem sikerült csatlakozni az FTP szerverhez!\n");
+}
+if (!ftp_login($conn, $ftp_user, $ftp_pass)) {
+    if (function_exists('wp_die')) {
+        wp_die('FTP belépés sikertelen!');
+    }
+    if (php_sapi_name() === 'cli') exit("FTP belépés sikertelen!\n");
+}
 ftp_pasv($conn, true);
 
 foreach ($changed_files as $local_file) {

@@ -123,4 +123,4 @@ class Met_Plugin_GeminiRAG {
     }
 }
 
-new Met_Plugin_GeminiRAG();
+// Instantiation is handled by the main plugin class (includes/class-met-plugin.php)
